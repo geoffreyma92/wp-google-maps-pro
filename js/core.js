@@ -1651,7 +1651,8 @@ jQuery(function() {
                             wpmgza_show_address = "";
                         }
                         if (wpgmaps_localize[entry]['directions_enabled'] === "1") {
-                            wpmgza_dir_enabled = '<p><a href="javascript:void(0);" id="'+map_id+'" class="wpgmza_gd" wpgm_addr_field="'+wpmgza_address+'" gps="'+parseFloat(lat)+','+parseFloat(lng)+'">'+wpgmaps_lang_get_dir+'</a></p>';
+                            // wpmgza_dir_enabled = '<p><a href="javascript:void(0);" id="'+map_id+'" class="wpgmza_gd" wpgm_addr_field="'+wpmgza_address+'" gps="'+parseFloat(lat)+','+parseFloat(lng)+'">'+wpgmaps_lang_get_dir+'</a></p>';
+                            wpmgza_dir_enabled = '<p><a href="http://maps.google.com.au/maps?q='+parseFloat(lat)+','+parseFloat(lng)+'"  target="_blank" id="'+map_id+'" wpgm_addr_field="'+wpmgza_address+'" gps="'+parseFloat(lat)+','+parseFloat(lng)+'">'+wpgmaps_lang_get_dir+'</a></p>';
                         } else {
                             wpmgza_dir_enabled = '';
                         }
@@ -1771,32 +1772,40 @@ jQuery(function() {
                             map_id: map_id,
                             marker_array: marker_sl_array
                     };
-                    jQuery.post(ajaxurl, data, function(response) {
-                            jQuery("#wpgmza_table_"+map_id+"").html(response);
-                            //jQuery("#wpgmza_table_"+map_id).dataTable( {"bDestroy":true});
-                            wpgmzaTable[map_id] = jQuery('#wpgmza_table_'+map_id).dataTable({
-                                    "bDestroy":true,
-                                    "bProcessing": true,
-                                    "aaSorting": [[wpgmaps_order_by, wpgmaps_order_by_choice]],
-                                    "oLanguage": {
-                                            "sLengthMenu": wpgm_dt_sLengthMenu,
-                                            "sZeroRecords": wpgm_dt_sZeroRecords,
-                                            "sInfo": wpgm_dt_sInfo,
-                                            "sInfoEmpty": wpgm_dt_sInfoEmpty,
-                                            "sInfoFiltered": wpgm_dt_sInfoFiltered,
-                                            "sSearch": wpgm_dt_sSearch,
-                                            "oPaginate" : {
-                                                "sFirst": wpgm_dt_sFirst,
-                                                "sLast": wpgm_dt_sLast,
-                                                "sNext": wpgm_dt_sNext,
-                                                "sPrevious": wpgm_dt_sPrevious,
-                                               "sSearch": wpgm_dt_sSearch
-                                            }
-                                    }
+                    // Added conditon to check if makrers being added to the table had contained more than 1
+                    if(marker_sl_array.length) {
+                        jQuery.post(ajaxurl, data, function(response) {
+                                jQuery("#wpgmza_table_"+map_id+"").html(response);
+                                //jQuery("#wpgmza_table_"+map_id).dataTable( {"bDestroy":true});
+                                wpgmzaTable[map_id] = jQuery('#wpgmza_table_'+map_id).dataTable({
+                                        "bDestroy":true,
+                                        "bProcessing": true,
+                                        "aaSorting": [[wpgmaps_order_by, wpgmaps_order_by_choice]],
+                                        "oLanguage": {
+                                                "sLengthMenu": wpgm_dt_sLengthMenu,
+                                                "sZeroRecords": wpgm_dt_sZeroRecords,
+                                                "sInfo": wpgm_dt_sInfo,
+                                                "sInfoEmpty": wpgm_dt_sInfoEmpty,
+                                                "sInfoFiltered": wpgm_dt_sInfoFiltered,
+                                                "sSearch": wpgm_dt_sSearch,
+                                                "oPaginate" : {
+                                                    "sFirst": wpgm_dt_sFirst,
+                                                    "sLast": wpgm_dt_sLast,
+                                                    "sNext": wpgm_dt_sNext,
+                                                    "sPrevious": wpgm_dt_sPrevious,
+                                                   "sSearch": wpgm_dt_sSearch
+                                                }
+                                        }
 
-                                });
+                                    });
 
-                    });
+                        });
+                    }
+                    else {
+                        $('.wpgmza_table').hide();
+                        var url = "e-post-form";    
+                        $(location).attr('href',url);
+                    }
                 }
                 if (jQuery("#wpgmza_marker_list_"+map_id).length > 0) {
                     /* carousel listing */
